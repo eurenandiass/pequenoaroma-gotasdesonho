@@ -24,38 +24,42 @@
             --texto-suave: #5C5A59;
         }
 
-        /* Container da Experiência Hero */
-        .hero-container {
+        /* Container de Scroll Ampliado para Controlar o Ritmo do Efeito Hero */
+        .scroll-space-container {
+            height: 480vh; /* Controla a duração do zoom na tela */
             position: relative;
-            min-height: 100vh;
             width: 100%;
-            background-color: var(--creme);
         }
 
-        /* Texto Inicial da Intro - AJUSTADO COM ANIMAÇÃO PREMIUM SLIDE-UP */
+        /* Janela Sticky Visual que fica Fixa no Navegador durante o Zoom */
+        .sticky-view-window {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            background-color: var(--creme);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Texto Inicial da Intro - Posição Absoluta Controlada */
         .intro-text {
             position: absolute;
             top: 15%;
             left: 50%;
-            transform: translate(-50%, -20px);
+            transform: translate(-50%, -50%);
             font-family: 'Playfair Display', serif;
             font-size: 28px;
             font-style: italic;
             color: #7A638D;
             text-align: center;
-            opacity: 0;
-            animation: fadeInSlideUp 1.8s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.4s;
-            transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1);
             z-index: 10;
             width: 100%;
             pointer-events: none;
-        }
-
-        @keyframes fadeInSlideUp {
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%);
-            }
+            will-change: opacity;
+            transition: opacity 0.2s ease;
         }
 
         /* Indicador de Rolagem Minimalista (Scroll Cue) */
@@ -69,9 +73,9 @@
             align-items: center;
             gap: 8px;
             z-index: 10;
-            opacity: 1;
-            transition: opacity 0.6s ease, transform 0.6s ease;
             pointer-events: none;
+            will-change: opacity, transform;
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
         .scroll-indicator span {
@@ -106,26 +110,62 @@
             80%, 100% { transform: translateY(100%); }
         }
 
-        /* Área de Conteúdo Geral */
-        .hero-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 80px 4%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            min-height: 100vh;
-            gap: 40px;
+        /* Bloco Dinâmico do Frasco - Centralização Absoluta Estrita */
+        .hero-image-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            transform-origin: center center;
+            width: 320px;
+            height: auto;
+            z-index: 5;
+            will-change: transform, opacity;
+            pointer-events: none;
         }
 
-        /* Bloco de Texto (Esquerda) */
-        .hero-content {
-            flex: 1;
-            max-width: 600px;
+        .hero-image-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #EFE9DE;
+            border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
+            z-index: -1;
             opacity: 0;
-            transform: translateX(-30px);
-            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-            pointer-events: none;
+            transform: scale(0.8);
+            transition: all 1s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .hero-image-wrapper img {
+            max-width: 100%;
+            height: auto;
+            filter: drop-shadow(0 20px 35px rgba(0,0,0,0.08));
+            display: block;
+        }
+
+        /* Área de Conteúdo Revelado (Antigo hero-wrapper) */
+        .hero-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.92);
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            text-align: center;
+            z-index: 2;
+            opacity: 0;
+            will-change: transform, opacity;
+            transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Bloco de Texto Interno Ajustado para Revelação Centralizada */
+        .hero-content {
+            width: 100%;
+            margin: 0 auto;
         }
 
         .badge-autoridade {
@@ -144,10 +184,11 @@
 
         .hero-content h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 48px;
+            font-size: 44px;
             font-weight: 600;
-            line-height: 1.15;
+            line-height: 1.2;
             margin-bottom: 24px;
+            color: #2C2A29;
         }
 
         .hero-content h1 span {
@@ -160,111 +201,19 @@
             font-size: 16px;
             line-height: 1.6;
             color: var(--texto-suave);
+            max-width: 680px;
+            margin: 0 auto;
         }
 
-        /* Bloco Dinâmico da Imagem com Efeito Zoom Reverso Sutil de Entrada */
-        .hero-image-wrapper {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.96);
-            width: 320px;
-            height: auto;
-            opacity: 0;
-            animation: bottleFadeIn 1.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-            transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
-            z-index: 5;
-            cursor: pointer;
-        }
-
-        @keyframes bottleFadeIn {
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
-        }
-
-        .hero-image-wrapper::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-color: #EFE9DE;
-            border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
-            z-index: -1;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 1s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-
-        .hero-image-wrapper img {
-            max-width: 100%;
-            height: auto;
-            filter: drop-shadow(0 20px 35px rgba(0,0,0,0.08));
-            transition: transform 0.5s ease;
-        }
-
-        /* ESTADO ATIVADO (Transição Suave ao Interagir) */
-        .hero-container.active .intro-text {
-            opacity: 0;
-        }
-
-        .hero-container.active .scroll-indicator {
-            opacity: 0;
-            transform: translate(-50%, 20px);
-        }
-
-        .hero-container.active .hero-image-wrapper {
-            left: 75%;
-            width: 280px;
-        }
-
-        .hero-container.active .hero-image-wrapper::before {
-            opacity: 1;
-            transform: scale(1.2);
-        }
-
-        .hero-container.active .hero-content {
-            opacity: 1;
-            transform: translateX(0);
-            pointer-events: all;
-        }
-
-        /* Ajustes de Layout e Animação Mobile */
+        /* Ajustes de Layout e Animação Mobile para o Efeito de Zoom */
         @media (max-width: 968px) {
-            .hero-wrapper {
-                flex-direction: column-reverse;
-                justify-content: center;
-                padding-top: 100px;
-            }
-
             .hero-image-wrapper {
-                width: 240px;
+                width: 230px;
             }
 
-            .hero-content h1 { font-size: 34px; text-align: center; }
-            .hero-content p { font-size: 15px; text-align: center; }
-            .badge-autoridade { margin: 0 auto 24px auto; }
-
-            .intro-text {
-                font-size: 22px;
-                top: 12%;
-            }
-
-            /* No mobile, o frasco vai para cima do texto */
-            .hero-container.active .hero-image-wrapper {
-                left: 50%;
-                top: 25%;
-                width: 180px;
-            }
-            
-            .hero-container.active .hero-content {
-                margin-top: 280px;
-            }
+            .hero-content h1 { font-size: 30px; }
+            .hero-content p { font-size: 14.5px; }
+            .intro-text { font-size: 22px; top: 12%; }
         }
 
         /* ==========================================================================
@@ -276,6 +225,8 @@
             width: 100%;
             display: flex;
             justify-content: center;
+            position: relative;
+            z-index: 15; /* Garante que a seção role por cima do efeito travado */
         }
 
         .dor-container { max-width: 1000px; text-align: center; }
@@ -333,7 +284,6 @@
         .solucao-imagem-box { flex: 0.8; display: flex; justify-content: center; }
         .solucao-imagem-box img { max-width: 100%; height: auto; border-radius: 16px; filter: drop-shadow(0 20px 40px rgba(122,99,141,0.06)); }
         
-        /* Botão Sofisticado e Integrado */
         .solucao-cta-box { text-align: center; margin-top: 80px; }
         .btn-solucao { 
             display: inline-block; 
@@ -350,9 +300,6 @@
         }
         .btn-solucao:hover { background-color: #675179; transform: translateY(-2px); }
 
-        /* ==========================================================================
-           RESPONSIVIDADE MOBILE GERAL
-           ========================================================================== */
         @media (max-width: 968px) {
             .cenas-dor-grid { grid-template-columns: 1fr; gap: 20px; }
             .solucao-conteudo-split { flex-direction: column; gap: 40px; }
@@ -365,27 +312,29 @@
 </head>
 <body>
 
-    <div class="hero-container" id="heroContainer">
-        
-        <div class="intro-text" id="introText">Desacelere. Respire fundo.</div>
+    <div class="scroll-space-container">
+        <div class="sticky-view-window" id="heroContainer">
+            
+            <div class="intro-text" id="introText">Desacelere. Respire fundo.</div>
 
-        <div class="hero-image-wrapper" id="productBottle">
-            <img src="imagens/foto-frasco-topo.png" alt="Óleo Essencial Gotas de Sonho">
-        </div>
-
-        <div class="scroll-indicator" id="scrollIndicator">
-            <span>Rolar para descobrir</span>
-            <div class="scroll-line"></div>
-        </div>
-
-        <div class="hero-wrapper">
-            <div class="hero-content">
-                <div class="badge-autoridade">🌸 O Segredo do Descanso Natural</div>
-                <h1>Transforme o sono do seu bebê em um ritual de paz e <span>descanso profundo.</span></h1>
-                <p>O óleo essencial roll-on Gotas de Sonho foi desenvolvido artesanalmente para desaquecer a mente e relaxar o corpinho do seu bebê após um dia agitado. Uma solution 100% pura e segura para noites inteiras de sono tranquilo e o descanso que a sua família merece.</p>
+            <div class="hero-image-wrapper" id="productBottle">
+                <img src="imagens/foto-frasco-topo.png" alt="Óleo Essencial Gotas de Sonho">
             </div>
-        </div>
 
+            <div class="scroll-indicator" id="scrollIndicator">
+                <span>Rolar para descobrir</span>
+                <div class="scroll-line"></div>
+            </div>
+
+            <div class="hero-wrapper" id="revealedWrapper">
+                <div class="hero-content">
+                    <div class="badge-autoridade">🌸 O Segredo do Descanso Natural</div>
+                    <h1>Transforme o sono do seu bebê em um ritual de paz e <span>descanso profundo.</span></h1>
+                    <p>O óleo essencial roll-on Gotas de Sonho foi desenvolvido artesanalmente para desaquecer a mente e relaxar o corpinho do seu bebê após um dia agitado. Uma solução 100% pura e segura para noites inteiras de sono tranquilo e o descanso que a sua família merece.</p>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <section class="secao-dor">
@@ -455,21 +404,53 @@
     </section>
 
     <script>
-        const container = document.getElementById('heroContainer');
-        const bottle = document.getElementById('productBottle');
-        const indicator = document.getElementById('scrollIndicator');
-
-        function triggerTransition() {
-            if(!container.classList.contains('active')) {
-                container.classList.add('active');
-            }
-        }
-
-        bottle.addEventListener('click', triggerTransition);
+        const scrollSpaceContainer = document.querySelector('.scroll-space-container');
+        const productBottle = document.getElementById('productBottle');
+        const introText = document.getElementById('introText');
+        const scrollIndicator = document.getElementById('scrollIndicator');
+        const revealedWrapper = document.getElementById('revealedWrapper');
 
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 20) {
-                triggerTransition();
+            const containerTop = scrollSpaceContainer.offsetTop;
+            const containerHeight = scrollSpaceContainer.offsetHeight - window.innerHeight;
+            const scrolled = window.scrollY - containerTop;
+            
+            // Trava o progresso rigorosamente entre 0 e 1
+            let progress = scrolled / containerHeight;
+            progress = Math.max(0, Math.min(1, progress));
+
+            // 1. Desaparece com a introdução e o indicador no início do scroll
+            if (progress > 0.08) {
+                introText.style.opacity = '0';
+                scrollIndicator.style.opacity = '0';
+                scrollIndicator.style.transform = 'translate(-50%, 20px)';
+            } else {
+                introText.style.opacity = '1';
+                scrollIndicator.style.opacity = '1';
+                scrollIndicator.style.transform = 'translate(-50%, 0)';
+            }
+
+            // 2. Controla o Zoom do Frasco preso milimetricamente no centro (-50%, -50%)
+            const maxScale = 22; 
+            const currentScale = 1 + (progress * (maxScale - 1));
+            productBottle.style.transform = `translate(-50%, -50%) scale(${currentScale})`;
+
+            // Desvanece o frasco na fase final do mergulho (acima de 65% de progresso)
+            if (progress > 0.65) {
+                productBottle.style.opacity = Math.max(0, 1 - (progress - 0.65) * 4);
+            } else {
+                productBottle.style.opacity = '1';
+            }
+
+            // 3. Revelação Suave do Bloco de Texto Principal de Vendas
+            if (progress > 0.75) {
+                revealedWrapper.style.opacity = '1';
+                revealedWrapper.style.transform = 'translate(-50%, -50%) scale(1)';
+                revealedWrapper.style.pointerEvents = 'all';
+            } else {
+                revealedWrapper.style.opacity = '0';
+                revealedWrapper.style.transform = 'translate(-50%, -50%) scale(0.92)';
+                revealedWrapper.style.pointerEvents = 'none';
             }
         }, { passive: true });
     </script>
@@ -501,7 +482,7 @@
                         </div>
                         <div class="geracao-item">
                             <span>👦🏻 Pedro</span>
-                            <p>Cresceu protegido por noites de sono tranquilo.</p>
+                            <p>Cresceu protegido por noites of sono tranquilo.</p>
                         </div>
                         <div class="geracao-item">
                             <span>👧🏼 Marina</span>
@@ -758,77 +739,18 @@
     }
 
     .seguranca-container { max-width: 1100px; width: 100%; text-align: center; }
-    .seguranca-subtitulo { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #7A638D; margin-bottom: 24px; }
-    
     .seguranca-container h2 { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 600; line-height: 1.3; color: #2C2A29; margin-bottom: 30px; }
     .seguranca-container h2 span { font-style: italic; font-weight: 400; color: #7A638D; display: block; margin-top: 6px; }
-    
     .seguranca-introducao { font-size: 16px; line-height: 1.8; color: #5C5A59; max-width: 850px; margin: 0 auto 60px auto; }
-
-    .seguranca-pilares-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 30px;
-        margin-bottom: 60px;
-    }
-
-    .pilar-card {
-        background-color: #FFFFFF;
-        padding: 45px 35px;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(122, 99, 141, 0.02);
-        text-align: center;
-        transition: transform 0.3s ease;
-    }
-
-    .pilar-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 15px 35px rgba(122, 99, 141, 0.05);
-    }
-
-    .pilar-icone {
-        font-size: 28px;
-        margin-bottom: 20px;
-        display: inline-block;
-    }
-
-    .pilar-card h3 {
-        font-family: 'Montserrat', sans-serif;
-        font-size: 16px;
-        font-weight: 600;
-        color: #2C2A29;
-        margin-bottom: 15px;
-        letter-spacing: -0.01em;
-    }
-
-    .pilar-card p {
-        font-size: 13.5px;
-        line-height: 1.7;
-        color: #5C5A59;
-    }
-
-    .seguranca-conclusao-box {
-        max-width: 850px;
-        margin: 0 auto;
-        border-top: 1px dashed #CDBDDA;
-        padding-top: 40px;
-    }
-
-    .seguranca-conclusao-box p {
-        font-size: 15px;
-        line-height: 1.8;
-        color: #4A4847;
-    }
-
-    .seguranca-conclusao-box strong {
-        color: #7A638D;
-        font-weight: 600;
-        display: block;
-        margin-bottom: 10px;
-        text-transform: uppercase;
-        font-size: 12px;
-        letter-spacing: 0.05em;
-    }
+    .seguranca-pilares-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-bottom: 60px; }
+    .pilar-card { background-color: #FFFFFF; padding: 45px 35px; border-radius: 16px; box-shadow: 0 10px 30px rgba(122, 99, 141, 0.02); text-align: center; transition: transform 0.3s ease; }
+    .pilar-card:hover { transform: translateY(-4px); box-shadow: 0 15px 35px rgba(122, 99, 141, 0.05); }
+    .pilar-icone { font-size: 28px; margin-bottom: 20px; display: inline-block; }
+    .pilar-card h3 { font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 600; color: #2C2A29; margin-bottom: 15px; letter-spacing: -0.01em; }
+    .pilar-card p { font-size: 13.5px; line-height: 1.7; color: #5C5A59; }
+    .seguranca-conclusao-box { max-width: 850px; margin: 0 auto; border-top: 1px dashed #CDBDDA; padding-top: 40px; }
+    .seguranca-conclusao-box p { font-size: 15px; line-height: 1.8; color: #4A4847; }
+    .seguranca-conclusao-box strong { color: #7A638D; font-weight: 600; display: block; margin-bottom: 10px; text-transform: uppercase; font-size: 12px; letter-spacing: 0.05em; }
 
     @media (max-width: 968px) {
         .seguranca-pilares-grid { grid-template-columns: 1fr; gap: 20px; }
@@ -847,46 +769,37 @@
         <div class="ofertas-grid">
             <div class="oferta-card">
                 <p class="card-badge-invisible">&nbsp;</p>
-                
                 <div class="kit-imagem-box">
                     <img src="imagens/foto-frasco-topo.png" alt="1 Frasco Gotas de Sonho">
                 </div>
-
                 <h3 class="kit-titulo">Ritual de Experiência</h3>
                 <p class="kit-subtitulo">1 frasco do Gotas de Sonho (10ml)</p>
-                
                 <div class="kit-preco-box">
                     <span class="preco-por"><span>R$</span> 89,90</span>
                     <span class="preco-parcela">ou 10x de <strong>R$ 8,99</strong></span>
                     <span class="tag-frete-calculado">📦 + Frete de R$ 19,90</span>
                 </div>
-
                 <ul class="kit-beneficios">
                     <li>🌱 Óleo 100% puro e isolado</li>
                     <li>🍼 Formato roll-on prático e seguro</li>
                     <li>✨ Ideal para testar a calmaria do sono</li>
                     <li>❌ Sem bônus inclusos</li>
                 </ul>
-
                 <a href="SEU_LINK_DE_CHECKOUT_1" class="btn-checkout">EXPERIMENTAR PRODUTO</a>
             </div>
 
             <div class="oferta-card destaque">
                 <p class="card-badge-destaque">🔥 O MAIS RECOMENDADO PARA O SONO</p>
-                
                 <div class="kit-imagem-box">
                     <img src="imagens/foto-frasco-topo.png" alt="2 Frascos Gotas de Sonho">
                 </div>
-
                 <h3 class="kit-titulo">Sono Garantido</h3>
                 <p class="kit-subtitulo">2 frascos do Gotas de Sonho (20ml total)</p>
-                
                 <div class="kit-preco-box">
                     <span class="preco-por"><span>R$</span> 147,90</span>
                     <span class="preco-parcela">ou 10x de <strong>R$ 14,79</strong></span>
                     <span class="tag-frete-gratis">🚚 FRETE GRÁTIS INCLUSO</span>
                 </div>
-
                 <div class="farmacinha-itens-lista">
                     <p><strong>Bônus Exclusivos Inclusos:</strong></p>
                     <ul>
@@ -894,33 +807,27 @@
                         <li>👥 <strong>Grupo VIP:</strong> Suporte direto com nossa comunidade.</li>
                     </ul>
                 </div>
-
                 <ul class="kit-beneficios">
                     <li>🌱 Óleo 100% puro e isolado</li>
                     <li>🍼 Formato roll-on prático e seguro</li>
                     <li>✨ Garante o estoque do ritual sem interrupções</li>
                     <li>🎒 Perfeito para deixar um em casa e outro na bolsa</li>
                 </ul>
-
                 <a href="SEU_LINK_DE_CHECKOUT_2" class="btn-checkout btn-destaque-animado">GARANTIR COMBO CAMPEÃO</a>
             </div>
 
             <div class="oferta-card">
                 <p class="card-badge-invisible">&nbsp;</p>
-                
                 <div class="kit-imagem-box">
                     <img src="imagens/foto-frasco-topo.png" alt="Kit Bebê 3 Óleos">
                 </div>
-
                 <h3 class="kit-titulo">Kit Bebê Completo</h3>
                 <p class="kit-subtitulo">Gotas de Sonho + Colicalivio + Respira Bebê</p>
-                
                 <div class="kit-preco-box">
                     <span class="preco-por"><span>R$</span> 198,90</span>
                     <span class="preco-parcela">ou 12x de <strong>R$ 19,89</strong></span>
                     <span class="tag-frete-gratis">🚚 FRETE GRÁTIS INCLUSO</span>
                 </div>
-
                 <div class="farmacinha-itens-lista blue-bonus">
                     <p><strong>Solução de Proteção Completa:</strong></p>
                     <ul>
@@ -929,14 +836,12 @@
                         <li>💨 <strong>Respira Bebê:</strong> Conforto e proteção respiratória.</li>
                     </ul>
                 </div>
-
                 <ul class="kit-beneficios">
                     <li>🌱 Óleo 100% puro e isolado</li>
                     <li>🍼 Formato roll-on prático e seguro</li>
                     <li>💎 O melhor custo-benefício por frasco</li>
                     <li>🎁 Inclui Guia Digital + Acesso ao Grupo VIP</li>
                 </ul>
-
                 <a href="SEU_LINK_DE_CHECKOUT_3" class="btn-checkout">GARANTIR UPGRADE COMPLETO</a>
             </div>
         </div>
@@ -948,172 +853,42 @@
 </section>
 
 <style>
-    /* ==========================================================================
-       ESTILOS DA SEÇÃO 7 (PREÇOS INTEIROS E COMPACTOS)
-       ========================================================================== */
-    .secao-ofertas {
-        background-color: #F7F1E8; 
-        padding: 140px 4%;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
-
+    .secao-ofertas { background-color: #F7F1E8; padding: 140px 4%; width: 100%; display: flex; justify-content: center; }
     .ofertas-container { max-width: 1200px; width: 100%; text-align: center; }
     .ofertas-subtitulo { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #7A638D; margin-bottom: 24px; }
-    
     .ofertas-container h2 { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 600; line-height: 1.3; color: #2C2A29; margin-bottom: 20px; }
     .ofertas-container h2 span { font-style: italic; font-weight: 400; color: #7A638D; }
     .ofertas-introducao { font-size: 16px; color: #5C5A59; margin-bottom: 60px; }
-
-    .ofertas-grid {
-        display: flex;
-        align-items: stretch;
-        justify-content: center;
-        gap: 30px;
-        margin-bottom: 50px;
-    }
-
-    .oferta-card {
-        background-color: #FFFFFF;
-        flex: 1;
-        max-width: 370px;
-        padding: 25px 25px 40px 25px;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(122, 99, 141, 0.02);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        position: relative;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .oferta-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 35px rgba(122, 99, 141, 0.05);
-    }
-
-    .oferta-card.destaque {
-        border: 2px solid #7A638D;
-        transform: scale(1.03);
-        box-shadow: 0 15px 40px rgba(122, 99, 141, 0.08);
-    }
-    .oferta-card.destaque:hover {
-        transform: scale(1.03) translateY(-5px);
-    }
-
-    .kit-imagem-box {
-        width: 100%;
-        height: 180px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-    .kit-imagem-box img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-        filter: drop-shadow(0 10px 15px rgba(0,0,0,0.05));
-    }
-
+    .ofertas-grid { display: flex; align-items: stretch; justify-content: center; gap: 30px; margin-bottom: 50px; }
+    .oferta-card { background-color: #FFFFFF; flex: 1; max-width: 370px; padding: 25px 25px 40px 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(122, 99, 141, 0.02); display: flex; flex-direction: column; justify-content: space-between; position: relative; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .oferta-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(122, 99, 141, 0.05); }
+    .oferta-card.destaque { border: 2px solid #7A638D; transform: scale(1.03); box-shadow: 0 15px 40px rgba(122, 99, 141, 0.08); }
+    .oferta-card.destaque:hover { transform: scale(1.03) translateY(-5px); }
+    .kit-imagem-box { width: 100%; height: 180px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+    .kit-imagem-box img { max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.05)); }
     .card-badge-invisible { font-size: 11px; margin-bottom: 10px; user-select: none; opacity: 0; }
-    .card-badge-destaque {
-        background-color: #7A638D;
-        color: #FFFFFF;
-        font-size: 10px;
-        font-weight: 600;
-        padding: 6px 12px;
-        border-radius: 50px;
-        display: inline-block;
-        margin-bottom: 15px;
-        letter-spacing: 0.03em;
-        align-self: center;
-    }
-
+    .card-badge-destaque { background-color: #7A638D; color: #FFFFFF; font-size: 10px; font-weight: 600; padding: 6px 12px; border-radius: 50px; display: inline-block; margin-bottom: 15px; letter-spacing: 0.03em; align-self: center; }
     .kit-titulo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 600; color: #2C2A29; margin-bottom: 60px; }
     .kit-subtitulo { font-size: 13px; color: #7C7A79; margin-top: -50px; margin-bottom: 25px; min-height: 38px; display: flex; align-items: center; justify-content: center; }
-
-    .kit-preco-box {
-        border-top: 1px solid #F2F6FA;
-        border-bottom: 1px solid #F2F6FA;
-        padding: 20px 0;
-        margin-bottom: 25px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
+    .kit-preco-box { border-top: 1px solid #F2F6FA; border-bottom: 1px solid #F2F6FA; padding: 20px 0; margin-bottom: 25px; display: flex; flex-direction: column; align-items: center; }
     .preco-por { font-family: 'Playfair Display', serif; font-size: 46px; font-weight: 600; color: #2C2A29; line-height: 1; }
     .preco-por span { font-size: 20px; font-weight: 400; margin-right: 2px; vertical-align: super; }
     .preco-parcela { font-size: 13.5px; color: #5C5A59; margin-top: 6px; }
     .preco-parcela strong { color: #7A638D; font-size: 15px; font-weight: 600; }
-    
-    .tag-frete-gratis {
-        background-color: #E2F0D9;
-        color: #385723;
-        font-size: 11px;
-        font-weight: 700;
-        padding: 5px 12px;
-        border-radius: 4px;
-        margin-top: 12px;
-        letter-spacing: 0.03em;
-        text-transform: uppercase;
-    }
-
-    .tag-frete-calculado {
-        background-color: #F2F6FA;
-        color: #5C5A59;
-        font-size: 11px;
-        font-weight: 500;
-        padding: 5px 12px;
-        border-radius: 4px;
-        margin-top: 12px;
-    }
-
-    .farmacinha-itens-lista {
-        text-align: left;
-        background-color: #FDFBF7;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        border: 1px solid rgba(205, 189, 218, 0.3);
-    }
+    .tag-frete-gratis { background-color: #E2F0D9; color: #385723; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 4px; margin-top: 12px; letter-spacing: 0.03em; text-transform: uppercase; }
+    .tag-frete-calculado { background-color: #F2F6FA; color: #5C5A59; font-size: 11px; font-weight: 500; padding: 5px 12px; border-radius: 4px; margin-top: 12px; }
+    .farmacinha-itens-lista { text-align: left; background-color: #FDFBF7; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(205, 189, 218, 0.3); }
     .farmacinha-itens-lista p { font-size: 12px; color: #2C2A29; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.02em; }
     .farmacinha-itens-lista ul { list-style: none; }
     .farmacinha-itens-lista li { font-size: 12.5px; color: #5C5A59; margin-bottom: 6px; line-height: 1.4; }
     .farmacinha-itens-lista li strong { color: #7A638D; }
-    
-    .farmacinha-itens-lista.blue-bonus {
-        background-color: #F4F7FA;
-        border: 1px solid rgba(122, 99, 141, 0.15);
-    }
-
+    .farmacinha-itens-lista.blue-bonus { background-color: #F4F7FA; border: 1px solid rgba(122, 99, 141, 0.15); }
     .kit-beneficios { list-style: none; text-align: left; margin-bottom: 30px; }
     .kit-beneficios li { font-size: 13px; color: #5C5A59; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-
-    .btn-checkout {
-        display: block;
-        background-color: #A6A4A3; 
-        color: #FFFFFF;
-        text-decoration: none;
-        padding: 18px 20px;
-        border-radius: 4px;
-        font-size: 13.5px;
-        font-weight: 600;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        text-align: center;
-        transition: background-color 0.2s ease, transform 0.2s ease;
-    }
+    .btn-checkout { display: block; background-color: #A6A4A3; color: #FFFFFF; text-decoration: none; padding: 18px 20px; border-radius: 4px; font-size: 13.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-align: center; transition: background-color 0.2s ease, transform 0.2s ease; }
     .btn-checkout:hover { background-color: #7C7A79; }
-
-    .oferta-card.destaque .btn-checkout {
-        background-color: #7A638D; 
-        box-shadow: 0 10px 25px rgba(122, 99, 141, 0.2);
-    }
+    .oferta-card.destaque .btn-checkout { background-color: #7A638D; box-shadow: 0 10px 25px rgba(122, 99, 141, 0.2); }
     .oferta-card.destaque .btn-checkout:hover { background-color: #675179; }
-
     @keyframes pulseSutil { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
     .btn-destaque-animado { animation: pulseSutil 2.5s infinite ease-in-out; }
     .ofertas-seguranca-footer { font-size: 12px; color: #7C7A79; margin-top: 30px; font-weight: 500; }
@@ -1134,7 +909,6 @@
     <div class="faq-container">
         <p class="faq-subtitulo">Dúvidas Frequentes</p>
         <h2>Perguntas comuns sobre o <span>Pequeno Aroma:</span></h2>
-
         <div class="faq-lista">
             <div class="faq-item">
                 <button class="faq-pergunta">
@@ -1145,7 +919,6 @@
                     <p>Sim! Todos os nossos blends são desenvolvidos com óleos 100% puros e isolados, em uma diluição rigorosamente segura em óleo carreador de amêndoas doces, específica para a pele sensível dos bebês. Para recém-nascidos abaixo de 3 meses, recomendamos sempre aplicar exclusivamente na sola dos pezinhos e consultar o pediatra da criança.</p>
                 </div>
             </div>
-
             <div class="faq-item">
                 <button class="faq-pergunta">
                     <span>Como funciona o prazo de entrega e o frete?</span>
@@ -1155,7 +928,6 @@
                     <p>O frete é calculado automaticamente no checkout da Wiapy para o kit individual (R$ 19,90). Já os combos de 2 e 3 unidades possuem Frete Grátis para todo o Brasil. O envio é feito via correios ou transportadoras parceiras, com código de rastreamento enviado diretamente no seu e-mail e WhatsApp assim que o produto for despachado.</p>
                 </div>
             </div>
-
             <div class="faq-item">
                 <button class="faq-pergunta">
                     <span>Como devo aplicar o roll-on no meu filho?</span>
@@ -1165,7 +937,6 @@
                     <p>O formato roll-on foi desenhado para ser prático e limpo. Basta deslizar a esfera diretamente na pele do bebê. Para o sono (Gotas de Sonho) ou cólicas (Colicalivio), aplique na sola dos pezinhos e nas costas massageando suavemente. Para crianças maiores de 1 ano, você também pode aplicar na nuca e nos pulsos para um estímulo olfativo contínuo.</p>
                 </div>
             </div>
-
             <div class="faq-item">
                 <button class="faq-pergunta">
                     <span>Quais as formas de pagamento aceitas?</span>
@@ -1175,7 +946,6 @@
                     <p>Aceitamos Pix (com aprovação imediata e envio mais rápido) e cartão de crédito em até 12 vezes através do checkout seguro da Wiapy. Todo o processo de pagamento possui criptografia de ponta para total segurança dos seus dados.</p>
                 </div>
             </div>
-
             <div class="faq-item">
                 <button class="faq-pergunta">
                     <span>Os bônus digitais e o Grupo VIP chegam como?</span>
@@ -1190,73 +960,20 @@
 </section>
 
 <style>
-    .secao-faq {
-        background-color: #F5F2F7; 
-        padding: 120px 4%;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
-
+    .secao-faq { background-color: #F5F2F7; padding: 120px 4%; width: 100%; display: flex; justify-content: center; }
     .faq-container { max-width: 850px; width: 100%; text-align: center; }
     .faq-subtitulo { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #7A638D; margin-bottom: 24px; }
-    
     .faq-container h2 { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 600; line-height: 1.3; color: #2C2A29; margin-bottom: 60px; }
     .faq-container h2 span { font-style: italic; font-weight: 400; color: #7A638D; }
-
     .faq-lista { width: 100%; text-align: left; }
-    
-    .faq-item {
-        background-color: #FFFFFF;
-        border-radius: 8px;
-        margin-bottom: 15px;
-        box-shadow: 0 4px 20px rgba(122, 99, 141, 0.02);
-        overflow: hidden;
-        border: 1px solid rgba(205, 189, 218, 0.2);
-    }
-
-    .faq-pergunta {
-        width: 100%;
-        background: none;
-        border: none;
-        padding: 24px 30px;
-        font-family: 'Montserrat', sans-serif;
-        font-size: 15px;
-        font-weight: 600;
-        color: #2C2A29;
-        text-align: left;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-    }
-
+    .faq-item { background-color: #FFFFFF; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 4px 20px rgba(122, 99, 141, 0.02); overflow: hidden; border: 1px solid rgba(205, 189, 218, 0.2); }
+    .faq-pergunta { width: 100%; background: none; border: none; padding: 24px 30px; font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 600; color: #2C2A29; text-align: left; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background-color 0.2s ease; }
     .faq-pergunta:hover { background-color: #FAF8FC; }
     .faq-icone { font-size: 20px; color: #7A638D; font-weight: 400; transition: transform 0.3s ease; }
-
-    .faq-resposta {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-        background-color: #FFFFFF;
-    }
-
-    .faq-resposta p {
-        padding: 0 30px 24px 30px;
-        font-size: 14px;
-        line-height: 1.7;
-        color: #5C5A59;
-    }
-
-    .faq-item.ativo .faq-resposta {
-        max-height: 300px; 
-    }
-    
-    .faq-item.ativo .faq-icone {
-        transform: rotate(45deg);
-        color: #A6A4A3;
-    }
+    .faq-resposta { max-height: 0; overflow: hidden; transition: max-height 0.3s cubic-bezier(0.25, 1, 0.5, 1); background-color: #FFFFFF; }
+    .faq-resposta p { padding: 0 30px 24px 30px; font-size: 14px; line-height: 1.7; color: #5C5A59; }
+    .faq-item.ativo .faq-resposta { max-height: 300px; }
+    .faq-item.ativo .faq-icone { transform: rotate(45deg); color: #A6A4A3; }
 
     @media (max-width: 968px) {
         .secao-faq { padding: 80px 20px; }
@@ -1266,141 +983,34 @@
     }
 </style>
 
-<script>
-    document.querySelectorAll('.faq-pergunta').forEach(botao => {
-        botao.addEventListener('click', () => {
-            const itemAtual = botao.parentElement;
-            const estaAtivo = itemAtual.classList.contains('ativo');
-            
-            document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('ativo'));
-            
-            if (!estaAtivo) {
-                itemAtual.classList.add('ativo');
-            }
-        });
-    });
-</script>
-
 <footer class="rodape-site">
     <div class="rodape-container">
-        
         <div class="rodape-top">
             <div class="rodape-marca">
                 <h3>Pequeno Aroma</h3>
                 <p>Cuidado em gotas para o ritual do seu bebê.</p>
             </div>
-            
             <div class="rodape-sociais">
                 <a href="https://instagram.com/seu_usuario" target="_blank" rel="noopener" class="link-social">Instagram</a>
                 <span class="divisor-social">•</span>
                 <a href="https://wa.me/seunumerodowhatsapp" target="_blank" rel="noopener" class="link-social">WhatsApp de Suporte</a>
             </div>
         </div>
-
         <div class="rodape-linha"></div>
-
         <div class="rodape-bottom">
             <div class="rodape-legal">
                 <p>&copy; 2026 Pequeno Aroma. Todos os direitos reservados.</p>
                 <p class="empresa-dados">PEQUENO AROMA LTDA — CNPJ: 00.000.000/0001-00 — E-mail: contato@pequenoaroma.com.br</p>
             </div>
-
             <div class="rodape-politicas">
                 <a href="/politicas-de-privacidade.html" target="_blank">Políticas de Privacidade</a>
                 <a href="/termos-de-uso.html" target="_blank">Termos de Uso</a>
             </div>
         </div>
-
         <div class="rodape-disclaimer">
             <p>AVISO: Os produtos Pequeno Aroma são blends de aromaterapia desenvolvidos de forma artesanal e diluídos de forma segura para uso tópico complementar. Eles não substituem consultas médicas, diagnósticos ou tratamentos pediátricos recomendados pelo profissional de saúde do seu filho.</p>
         </div>
-
     </div>
 </footer>
-
-<style>
-    .rodape-site {
-        background-color: #F2F0F3; 
-        padding: 60px 4% 40px 4%;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        border-top: 1px solid rgba(205, 189, 218, 0.2);
-    }
-
-    .rodape-container {
-        max-width: 1100px;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .rodape-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 24px;
-    }
-
-    .rodape-marca h3 {
-        font-family: 'Playfair Display', serif;
-        font-size: 20px;
-        font-weight: 600;
-        color: #2C2A29;
-        margin-bottom: 4px;
-    }
-
-    .rodape-marca p { font-size: 13px; color: #7C7A79; }
-    .rodape-sociais { display: flex; align-items: center; gap: 12px; }
-
-    .link-social {
-        font-size: 13.5px;
-        font-weight: 500;
-        color: #7A638D;
-        text-decoration: none;
-        transition: color 0.2s ease;
-    }
-
-    .link-social:hover { color: #675179; text-decoration: underline; }
-    .divisor-social { color: #A6A4A3; font-size: 12px; }
-
-    .rodape-linha {
-        height: 1px;
-        background-color: rgba(205, 189, 218, 0.4);
-        margin: 35px 0;
-        width: 100%;
-    }
-
-    .rodape-bottom {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        flex-wrap: wrap;
-        gap: 24px;
-    }
-
-    .rodape-legal p { font-size: 12px; color: #7C7A79; line-height: 1.5; }
-    .empresa-dados { margin-top: 4px; font-size: 11px !important; color: #A6A4A3 !important; }
-    .rodape-politicas { display: flex; gap: 20px; }
-    .rodape-politicas a { font-size: 12px; color: #7C7A79; text-decoration: none; transition: color 0.2s ease; }
-    .rodape-politicas a:hover { color: #7A638D; }
-
-    .rodape-disclaimer {
-        margin-top: 40px;
-        background-color: rgba(255, 255, 255, 0.5);
-        padding: 16px 20px;
-        border-radius: 6px;
-        border: 1px solid rgba(205, 189, 218, 0.15);
-    }
-
-    .rodape-disclaimer p { font-size: 11px; line-height: 1.6; color: #969493; text-align: justify; }
-
-    @media (max-width: 768px) {
-        .rodape-top, .rodape-bottom { flex-direction: column; align-items: center; text-align: center; }
-        .rodape-politicas { justify-content: center; gap: 15px; }
-        .rodape-disclaimer p { text-align: center; }
-    }
-</style>
 </body>
 </html>
