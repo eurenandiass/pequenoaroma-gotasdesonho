@@ -32,21 +32,78 @@
             background-color: var(--creme);
         }
 
-        /* Texto Inicial da Intro - AJUSTADO PARA CIMA */
+        /* Texto Inicial da Intro - AJUSTADO COM ANIMAÇÃO PREMIUM SLIDE-UP */
         .intro-text {
             position: absolute;
             top: 15%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -20px);
             font-family: 'Playfair Display', serif;
             font-size: 28px;
             font-style: italic;
             color: #7A638D;
             text-align: center;
+            opacity: 0;
+            animation: fadeInSlideUp 1.8s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.4s;
             transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1);
             z-index: 10;
             width: 100%;
             pointer-events: none;
+        }
+
+        @keyframes fadeInSlideUp {
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        /* Indicador de Rolagem Minimalista (Scroll Cue) */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+            opacity: 1;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            pointer-events: none;
+        }
+
+        .scroll-indicator span {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            color: #A6A4A3;
+            text-transform: uppercase;
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 30px;
+            background: linear-gradient(to bottom, #7A638D, transparent);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scroll-line::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #7A638D;
+            animation: scrollDownAnim 2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+        }
+
+        @keyframes scrollDownAnim {
+            0% { transform: translateY(-100%); }
+            80%, 100% { transform: translateY(100%); }
         }
 
         /* Área de Conteúdo Geral */
@@ -105,7 +162,7 @@
             color: var(--texto-suave);
         }
 
-        /* Bloco Dinâmico da Imagem (Centro -> Direita) */
+        /* Bloco Dinâmico da Imagem com Efeito Zoom Reverso Sutil de Entrada */
         .hero-image-wrapper {
             flex: 1;
             display: flex;
@@ -114,12 +171,21 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) scale(0.96);
             width: 320px;
             height: auto;
+            opacity: 0;
+            animation: bottleFadeIn 1.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
             transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
             z-index: 5;
             cursor: pointer;
+        }
+
+        @keyframes bottleFadeIn {
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
         }
 
         .hero-image-wrapper::before {
@@ -142,9 +208,14 @@
             transition: transform 0.5s ease;
         }
 
-        /* ESTADO ATIVADO (Quando o usuário interage) */
+        /* ESTADO ATIVADO (Transição Suave ao Interagir) */
         .hero-container.active .intro-text {
             opacity: 0;
+        }
+
+        .hero-container.active .scroll-indicator {
+            opacity: 0;
+            transform: translate(-50%, 20px);
         }
 
         .hero-container.active .hero-image-wrapper {
@@ -302,19 +373,21 @@
             <img src="imagens/foto-frasco-topo.png" alt="Óleo Essencial Gotas de Sonho">
         </div>
 
+        <div class="scroll-indicator" id="scrollIndicator">
+            <span>Rolar para descobrir</span>
+            <div class="scroll-line"></div>
+        </div>
+
         <div class="hero-wrapper">
             <div class="hero-content">
                 <div class="badge-autoridade">🌸 O Segredo do Descanso Natural</div>
                 <h1>Transforme o sono do seu bebê em um ritual de paz e <span>descanso profundo.</span></h1>
-                <p>O óleo essencial roll-on Gotas de Sonho foi desenvolvido artesanalmente para desaquecer a mente e relaxar o corpinho do seu bebê após um dia agitado. Uma solução 100% pura e segura para noites inteiras de sono tranquilo e o descanso que a sua família merece.</p>
+                <p>O óleo essencial roll-on Gotas de Sonho foi desenvolvido artesanalmente para desaquecer a mente e relaxar o corpinho do seu bebê após um dia agitado. Uma solution 100% pura e segura para noites inteiras de sono tranquilo e o descanso que a sua família merece.</p>
             </div>
         </div>
 
     </div>
 
-    <!-- ==========================================================================
-         SEÇÃO 2: A REALIDADE DAS MADRUGADAS (DOR)
-         ========================================================================== -->
     <section class="secao-dor">
         <div class="dor-container">
             <p class="dor-subtitulo">A realidade das madrugadas em claro</p>
@@ -351,9 +424,6 @@
         </div>
     </section>
 
-    <!-- ==========================================================================
-         SEÇÃO 3: A SOLUÇÃO (GOTAS DE SONHO)
-         ========================================================================== -->
     <section class="secao-solucao">
         <div class="solucao-container">
             <p class="solucao-subtitulo">A Resposta da Natureza</p>
@@ -387,6 +457,7 @@
     <script>
         const container = document.getElementById('heroContainer');
         const bottle = document.getElementById('productBottle');
+        const indicator = document.getElementById('scrollIndicator');
 
         function triggerTransition() {
             if(!container.classList.contains('active')) {
@@ -400,19 +471,15 @@
             if (window.scrollY > 20) {
                 triggerTransition();
             }
-        });
+        }, { passive: true });
     </script>
 
-<!-- ==========================================================================
-     SEÇÃO 4: A AUTORIDADE ENXUTA (MÔNICA DIAS) - FUNDO CREME ALGODÃO
-     ========================================================================== -->
 <section class="secao-autoridade">
     <div class="autoridade-container">
         <p class="autoridade-subtitulo">Quem cuida do seu bebê</p>
         
         <div class="autoridade-split">
             <div class="autoridade-imagem-box">
-                <!-- Foto acolhedora da Mônica Dias -->
                 <img src="imagens/monica-dias.jpeg" alt="Mônica Dias - Criadora do Pequeno Aroma">
                 <div class="assinatura-box">
                     <p class="assinatura-nome">Mônica Dias</p>
@@ -425,7 +492,6 @@
                 
                 <p>Minha jornada na aromaterapia começou no chão da minha casa, movida pelo desejo de proteger quem eu mais amo. Como avó, vivi de perto a angústia de ver minha primeira neta, a Maitê, sofrer com crises respiratórias. Foi buscando um alívio natural e seguro que descobri o poder transformador dos óleos essenciais puros.</p>
                 
-                <!-- Grid de Netos Compacta e Visual -->
                 <div class="geracoes-cuidado-box">
                     <h4>Quatro gerações de amor e proteção real:</h4>
                     <div class="geracoes-grid">
@@ -450,10 +516,12 @@
 
                <p>Cada frasco roll-on do Gotas de Sonho é desenvolvido artesanalmente com óleos 100% puros e em diluição rigorosamente segura para peles sensíveis. Uma extensão do meu coração de avó para trazer calmaria e leveza à rotina da sua família.</p>
                 
-                <!-- Botão Estratégico Centralizado na Coluna de Texto -->
                 <div class="autoridade-cta-box">
                     <a href="#ofertas" class="btn-autoridade">RESTAURAR O SONO DO MEU BEBÊ</a>
                 </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <style>
@@ -482,7 +550,6 @@
     .autoridade-texto-box h2 span { font-style: italic; font-weight: 400; color: #7A638D; display: block; margin-top: 6px; }
     .autoridade-texto-box p { font-size: 15px; line-height: 1.7; color: #5C5A59; margin-bottom: 20px; text-align: justify; }
 
-    /* Caixa de Netos Reduzida e Clean */
     .geracoes-cuidado-box { 
         background-color: #FFFFFF; 
         padding: 25px; 
@@ -505,10 +572,10 @@
         .autoridade-texto-box p { text-align: left; }
         .geracoes-grid { grid-template-columns: 1fr; gap: 15px; }
     }
-/* Estilização do Botão da Seção de Autoridade - Centralizado ao Texto */
+
     .autoridade-cta-box {
         margin-top: 45px;
-        text-align: center; /* Centraliza o botão perfeitamente em relação à largura do texto da direita */
+        text-align: center; 
         width: 100%;
     }
 
@@ -531,7 +598,6 @@
         transform: translateY(-2px);
     }
 
-    /* Ajuste mobile para o botão preencher a tela do celular */
     @media (max-width: 968px) {
         .autoridade-cta-box {
             margin-top: 35px;
@@ -544,15 +610,11 @@
     }
 </style>
 
-<!-- ==========================================================================
-     SEÇÃO 5: PROVA SOCIAL REAL (PRINTS WHATSAPP) - FUNDO CÉU DE NUVEM
-     ========================================================================== -->
 <section class="secao-depoimentos">
     <div class="depoimentos-container">
         <p class="depoimentos-subtitulo">Resultados Reais nas Madrugadas</p>
         <h2>O que as mães enviam no WhatsApp da <span>Mônica:</span></h2>
 
-        <!-- Grid dinâmico para os 5 prints reais -->
         <div class="depoimentos-images-mural">
             <div class="print-card-real"><img src="imagens/depoimento1.jpeg" alt="Depoimento Real Isabelle"></div>
             <div class="print-card-real"><img src="imagens/depoimento2.jpeg" alt="Depoimento Real Layza"></div>
@@ -561,7 +623,6 @@
             <div class="print-card-real"><img src="imagens/depoimento5.jpeg" alt="Depoimento Real Cláudia"></div>
         </div>
 
-        <!-- Botão Estratégico CORRIGIDO - Centralizado abaixo de todo o mural -->
         <div class="depoimentos-cta-box">
             <a href="#ofertas" class="btn-depoimentos">QUERO ESSA TRANSFORMAÇÃO NA MINHA CASA</a>
         </div>
@@ -569,9 +630,6 @@
 </section>
 
 <style>
-    /* ==========================================================================
-       ESTILOS DA SEÇÃO 5 (MURAL DE PRINTS REAIS)
-       ========================================================================== */
     .secao-depoimentos {
         background-color: #F2F6FA; 
         padding: 120px 4%;
@@ -586,13 +644,12 @@
     .depoimentos-container h2 { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 600; line-height: 1.3; color: #2C2A29; margin-bottom: 60px; }
     .depoimentos-container h2 span { font-style: italic; font-weight: 400; color: #7A638D; }
 
-    /* Layout estilo mural/Pinterest */
     .depoimentos-images-mural {
         column-count: 3; 
         column-gap: 30px;
         width: 100%;
         text-align: left;
-        margin-bottom: 60px; /* Garante o espaçamento perfeito antes do botão entrar */
+        margin-bottom: 60px; 
     }
 
     .print-card-real {
@@ -619,13 +676,12 @@
         display: block;
     }
 
-    /* Caixa do Botão - Forçada a ocupar o centro absoluto abaixo do mural */
     .depoimentos-cta-box {
         display: block;
         width: 100%;
         text-align: center;
         margin-top: 20px;
-        clear: both; /* Garante que nenhuma flutuação lateral interfira no botão */
+        clear: both; 
     }
 
     .btn-depoimentos {
@@ -647,7 +703,6 @@
         transform: translateY(-2px);
     }
 
-    /* Responsividade Mobile Cirúrgica */
     @media (max-width: 968px) {
         .depoimentos-images-mural { 
             column-count: 1; 
@@ -660,9 +715,6 @@
         .btn-depoimentos { width: 100%; max-width: 360px; font-size: 14px; padding: 20px 20px; }
     }
 </style>
-<!-- ==========================================================================
-     SEÇÃO 6: SEGURANÇA E RIGOR TÉCNICO - FUNDO BRANCO LAVANDA
-     ========================================================================== -->
 <section class="secao-seguranca">
     <div class="seguranca-container">
         <p class="seguranca-subtitulo">Rigor Técnico e Responsabilidade</p>
@@ -671,21 +723,18 @@
         <p class="seguranca-introducao">Sabemos que o corpinho de um bebê é delicado e que o sistema imunológico dele está se desenvolvendo. É por isso que o Gotas de Sonho não é apenas um blend cheiroso; ele é uma fórmula desenvolvida sob os mais rígidos critérios de segurança da aromaterapia pediátrica internacional.</p>
 
         <div class="seguranca-pilares-grid">
-            <!-- Pilar 1 -->
             <div class="pilar-card">
                 <div class="pilar-icone">🌱</div>
                 <h3>Matéria-Prima 100% Pura</h3>
                 <p>Trabalhamos exclusivamente com óleos essenciais puros e isolados, livres de fragrâncias sintéticas, parabenos, conservantes químicos ou corantes artificiais. É a natureza em seu estado mais limpo.</p>
             </div>
 
-            <!-- Pilar 2 -->
             <div class="pilar-card">
                 <div class="pilar-icone">⚖️</div>
                 <h3>Diluição Segura e Rigorosa</h3>
-                <p>Óleos essenciais puros são potentes demais para crianças. Nossa fórmula usa uma diluição exata e segura em Óleo de Amêndoas Doces Puto (óleo carreador), permitindo a aplicação direta na pele sem riscos de irritação ou toxicidade.</p>
+                <p>Óleos essenciais puros são potentes demais para crianças. Nossa fórmula usa uma diluição exata e segura em Óleo de Amêndoas Doces Puro (óleo carreador), permitindo a aplicação direta na pele sem riscos de irritação ou toxicidade.</p>
             </div>
 
-            <!-- Pilar 3 -->
             <div class="pilar-card">
                 <div class="pilar-icone">🛡️</div>
                 <h3>Testado e Regulamentado</h3>
@@ -696,14 +745,12 @@
         <div class="seguranca-conclusao-box">
             <p><strong>Como usar no ritual da noite:</strong> Para os bebês menores, deslize a esfera roll-on suavemente na sola dos pezinhos e na região das costas, fazendo uma leve massagem. Para crianças maiores (acima de 1 ano), você também pode aplicar na nuca e nos pulsos, permitindo que os ativos relaxantes e o aroma suave acalmem a agitação da mente de forma contínua antes de dormir. O formato roll-on garante a dosagem exata e impede o desperdício.</p>
         </div>
+    </div>
 </section>
 
 <style>
-    /* ==========================================================================
-       ESTILOS DA SEÇÃO 6 (SEGURANÇA E PUREZA) - BRANCO LAVANDA
-       ========================================================================== */
     .secao-seguranca {
-        background-color: #F5F2F7; /* Lavanda ultra diluído / Branco suave */
+        background-color: #F5F2F7; 
         padding: 120px 4%;
         width: 100%;
         display: flex;
@@ -718,7 +765,6 @@
     
     .seguranca-introducao { font-size: 16px; line-height: 1.8; color: #5C5A59; max-width: 850px; margin: 0 auto 60px auto; }
 
-    /* Grid de Pilares Técnicos */
     .seguranca-pilares-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -761,7 +807,6 @@
         color: #5C5A59;
     }
 
-    /* Bloco explicativo de uso */
     .seguranca-conclusao-box {
         max-width: 850px;
         margin: 0 auto;
@@ -785,7 +830,6 @@
         letter-spacing: 0.05em;
     }
 
-    /* Responsividade Mobile */
     @media (max-width: 968px) {
         .seguranca-pilares-grid { grid-template-columns: 1fr; gap: 20px; }
         .secao-seguranca { padding: 80px 20px; }
@@ -794,9 +838,6 @@
         .pilar-card { padding: 35px 25px; }
     }
 </style>
-<!-- ==========================================================================
-     SEÇÃO 7: COMBOS E OFERTAS - VERSÃO FINAL PREMIUM (PREÇOS INTEIROS)
-     ========================================================================== -->
 <section class="secao-ofertas" id="ofertas">
     <div class="ofertas-container">
         <p class="ofertas-subtitulo">Escolha o Ritual da sua Família</p>
@@ -804,7 +845,6 @@
         <p class="ofertas-introducao">Aproveite as condições especiais de lançamento com estoque artesanal limitado.</p>
 
         <div class="ofertas-grid">
-            <!-- Opção 1: Individual -->
             <div class="oferta-card">
                 <p class="card-badge-invisible">&nbsp;</p>
                 
@@ -831,7 +871,6 @@
                 <a href="SEU_LINK_DE_CHECKOUT_1" class="btn-checkout">EXPERIMENTAR PRODUTO</a>
             </div>
 
-            <!-- Opção 2: Campeão de Vendas (2 Frascos do Sono) -->
             <div class="oferta-card destaque">
                 <p class="card-badge-destaque">🔥 O MAIS RECOMENDADO PARA O SONO</p>
                 
@@ -866,7 +905,6 @@
                 <a href="SEU_LINK_DE_CHECKOUT_2" class="btn-checkout btn-destaque-animado">GARANTIR COMBO CAMPEÃO</a>
             </div>
 
-            <!-- Opção 3: O Upgrade (Kit Bebê - 3 Óleos Diferentes) -->
             <div class="oferta-card">
                 <p class="card-badge-invisible">&nbsp;</p>
                 
@@ -1006,7 +1044,6 @@
         align-items: center;
     }
 
-    /* Estilo do Preço Inteiro Sem Centavos */
     .preco-por { font-family: 'Playfair Display', serif; font-size: 46px; font-weight: 600; color: #2C2A29; line-height: 1; }
     .preco-por span { font-size: 20px; font-weight: 400; margin-right: 2px; vertical-align: super; }
     .preco-parcela { font-size: 13.5px; color: #5C5A59; margin-top: 6px; }
@@ -1034,7 +1071,6 @@
         margin-top: 12px;
     }
 
-    /* Listas de Bônus Internas */
     .farmacinha-itens-lista {
         text-align: left;
         background-color: #FDFBF7;
@@ -1094,16 +1130,12 @@
         .kit-subtitulo { min-height: auto; margin-bottom: 20px; }
     }
 </style>
-<!-- ==========================================================================
-     SEÇÃO 8: FAQ (PERGUNTAS FREQUENTES) - BRANCO LAVANDA
-     ========================================================================== -->
 <section class="secao-faq">
     <div class="faq-container">
         <p class="faq-subtitulo">Dúvidas Frequentes</p>
         <h2>Perguntas comuns sobre o <span>Pequeno Aroma:</span></h2>
 
         <div class="faq-lista">
-            <!-- Pergunta 1 -->
             <div class="faq-item">
                 <button class="faq-pergunta">
                     <span>O produto é seguro para bebês recém-nascidos?</span>
@@ -1114,7 +1146,6 @@
                 </div>
             </div>
 
-            <!-- Pergunta 2 -->
             <div class="faq-item">
                 <button class="faq-pergunta">
                     <span>Como funciona o prazo de entrega e o frete?</span>
@@ -1125,7 +1156,6 @@
                 </div>
             </div>
 
-            <!-- Pergunta 3 -->
             <div class="faq-item">
                 <button class="faq-pergunta">
                     <span>Como devo aplicar o roll-on no meu filho?</span>
@@ -1136,7 +1166,6 @@
                 </div>
             </div>
 
-            <!-- Pergunta 4 -->
             <div class="faq-item">
                 <button class="faq-pergunta">
                     <span>Quais as formas de pagamento aceitas?</span>
@@ -1147,7 +1176,6 @@
                 </div>
             </div>
 
-            <!-- Pergunta 5 -->
             <div class="faq-item">
                 <button class="faq-pergunta">
                     <span>Os bônus digitais e o Grupo VIP chegam como?</span>
@@ -1162,11 +1190,8 @@
 </section>
 
 <style>
-    /* ==========================================================================
-       ESTILOS DA SEÇÃO 8 (FAQ ACCORDION)
-       ========================================================================== */
     .secao-faq {
-        background-color: #F5F2F7; /* Branco Lavanda */
+        background-color: #F5F2F7; 
         padding: 120px 4%;
         width: 100%;
         display: flex;
@@ -1179,7 +1204,6 @@
     .faq-container h2 { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 600; line-height: 1.3; color: #2C2A29; margin-bottom: 60px; }
     .faq-container h2 span { font-style: italic; font-weight: 400; color: #7A638D; }
 
-    /* Estrutura dos itens do FAQ */
     .faq-lista { width: 100%; text-align: left; }
     
     .faq-item {
@@ -1191,7 +1215,6 @@
         border: 1px solid rgba(205, 189, 218, 0.2);
     }
 
-    /* Botão disparador da pergunta */
     .faq-pergunta {
         width: 100%;
         background: none;
@@ -1212,7 +1235,6 @@
     .faq-pergunta:hover { background-color: #FAF8FC; }
     .faq-icone { font-size: 20px; color: #7A638D; font-weight: 400; transition: transform 0.3s ease; }
 
-    /* Bloco da resposta escondida */
     .faq-resposta {
         max-height: 0;
         overflow: hidden;
@@ -1227,17 +1249,15 @@
         color: #5C5A59;
     }
 
-    /* Classes ativas controladas pelo JavaScript */
     .faq-item.ativo .faq-resposta {
-        max-height: 300px; /* Altura máxima dinâmica para acomodar o texto */
+        max-height: 300px; 
     }
     
     .faq-item.ativo .faq-icone {
-        transform: rotate(45deg); /* Transforma o "+" em um "x" ao abrir */
+        transform: rotate(45deg);
         color: #A6A4A3;
     }
 
-    /* Responsividade Mobile */
     @media (max-width: 968px) {
         .secao-faq { padding: 80px 20px; }
         .faq-container h2 { font-size: 28px; margin-bottom: 40px; }
@@ -1247,29 +1267,23 @@
 </style>
 
 <script>
-    // Script ultra leve para controlar a abertura do Accordion do FAQ
     document.querySelectorAll('.faq-pergunta').forEach(botao => {
         botao.addEventListener('click', () => {
             const itemAtual = botao.parentElement;
             const estaAtivo = itemAtual.classList.contains('ativo');
             
-            // Fecha todos os itens abertos antes de abrir o novo (opcional, traz elegância)
             document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('ativo'));
             
-            // Se não estava ativo, abre o clicado
             if (!estaAtivo) {
                 itemAtual.classList.add('ativo');
             }
         });
     });
 </script>
-<!-- ==========================================================================
-     RODAPÉ FINAL (FOOTER) - FECHAMENTO INSTITUCIONAL PREMIUM
-     ========================================================================== -->
+
 <footer class="rodape-site">
     <div class="rodape-container">
         
-        <!-- Bloco Superior: Marca e Redes -->
         <div class="rodape-top">
             <div class="rodape-marca">
                 <h3>Pequeno Aroma</h3>
@@ -1283,10 +1297,8 @@
             </div>
         </div>
 
-        <!-- Linha Divisória Sutil -->
         <div class="rodape-linha"></div>
 
-        <!-- Bloco Inferior: Dados Legais e LGPD -->
         <div class="rodape-bottom">
             <div class="rodape-legal">
                 <p>&copy; 2026 Pequeno Aroma. Todos os direitos reservados.</p>
@@ -1299,7 +1311,6 @@
             </div>
         </div>
 
-        <!-- Aviso de Isenção de Responsabilidade (Crucial para Meta Ads no nicho infantil/saúde) -->
         <div class="rodape-disclaimer">
             <p>AVISO: Os produtos Pequeno Aroma são blends de aromaterapia desenvolvidos de forma artesanal e diluídos de forma segura para uso tópico complementar. Eles não substituem consultas médicas, diagnósticos ou tratamentos pediátricos recomendados pelo profissional de saúde do seu filho.</p>
         </div>
@@ -1308,11 +1319,8 @@
 </footer>
 
 <style>
-    /* ==========================================================================
-       ESTILOS DO RODAPÉ (FOOTER)
-       ========================================================================== */
     .rodape-site {
-        background-color: #F2F0F3; /* Tom cinza-lavanda ultra suave */
+        background-color: #F2F0F3; 
         padding: 60px 4% 40px 4%;
         width: 100%;
         display: flex;
@@ -1327,7 +1335,6 @@
         flex-direction: column;
     }
 
-    /* Bloco Superior */
     .rodape-top {
         display: flex;
         justify-content: space-between;
@@ -1344,16 +1351,8 @@
         margin-bottom: 4px;
     }
 
-    .rodape-marca p {
-        font-size: 13px;
-        color: #7C7A79;
-    }
-
-    .rodape-sociais {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
+    .rodape-marca p { font-size: 13px; color: #7C7A79; }
+    .rodape-sociais { display: flex; align-items: center; gap: 12px; }
 
     .link-social {
         font-size: 13.5px;
@@ -1363,17 +1362,9 @@
         transition: color 0.2s ease;
     }
 
-    .link-social:hover {
-        color: #675179;
-        text-decoration: underline;
-    }
+    .link-social:hover { color: #675179; text-decoration: underline; }
+    .divisor-social { color: #A6A4A3; font-size: 12px; }
 
-    .divisor-social {
-        color: #A6A4A3;
-        font-size: 12px;
-    }
-
-    /* Linha Divisória */
     .rodape-linha {
         height: 1px;
         background-color: rgba(205, 189, 218, 0.4);
@@ -1381,7 +1372,6 @@
         width: 100%;
     }
 
-    /* Bloco Inferior */
     .rodape-bottom {
         display: flex;
         justify-content: space-between;
@@ -1390,35 +1380,12 @@
         gap: 24px;
     }
 
-    .rodape-legal p {
-        font-size: 12px;
-        color: #7C7A79;
-        line-height: 1.5;
-    }
+    .rodape-legal p { font-size: 12px; color: #7C7A79; line-height: 1.5; }
+    .empresa-dados { margin-top: 4px; font-size: 11px !important; color: #A6A4A3 !important; }
+    .rodape-politicas { display: flex; gap: 20px; }
+    .rodape-politicas a { font-size: 12px; color: #7C7A79; text-decoration: none; transition: color 0.2s ease; }
+    .rodape-politicas a:hover { color: #7A638D; }
 
-    .empresa-dados {
-        margin-top: 4px;
-        font-size: 11px !important;
-        color: #A6A4A3 !important;
-    }
-
-    .rodape-politicas {
-        display: flex;
-        gap: 20px;
-    }
-
-    .rodape-politicas a {
-        font-size: 12px;
-        color: #7C7A79;
-        text-decoration: none;
-        transition: color 0.2s ease;
-    }
-
-    .rodape-politicas a:hover {
-        color: #7A638D;
-    }
-
-    /* Caixa de Disclaimer (Aviso Legal) */
     .rodape-disclaimer {
         margin-top: 40px;
         background-color: rgba(255, 255, 255, 0.5);
@@ -1427,29 +1394,12 @@
         border: 1px solid rgba(205, 189, 218, 0.15);
     }
 
-    .rodape-disclaimer p {
-        font-size: 11px;
-        line-height: 1.6;
-        color: #969493;
-        text-align: justify;
-    }
+    .rodape-disclaimer p { font-size: 11px; line-height: 1.6; color: #969493; text-align: justify; }
 
-    /* Responsividade Mobile */
     @media (max-width: 768px) {
-        .rodape-top, .rodape-bottom {
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-        
-        .rodape-politicas {
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .rodape-disclaimer p {
-            text-align: center;
-        }
+        .rodape-top, .rodape-bottom { flex-direction: column; align-items: center; text-align: center; }
+        .rodape-politicas { justify-content: center; gap: 15px; }
+        .rodape-disclaimer p { text-align: center; }
     }
 </style>
 </body>
